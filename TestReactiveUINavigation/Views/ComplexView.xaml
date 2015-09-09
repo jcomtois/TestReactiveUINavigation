@@ -8,7 +8,8 @@
              mc:Ignorable="d"
              d:DesignHeight="300"
              d:DesignWidth="300"
-             Background="Aquamarine">
+             Background="Aquamarine"
+             >
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"></RowDefinition>
@@ -26,6 +27,7 @@
                       FontWeight="Bold"
                       HorizontalContentAlignment="Stretch"
                       VerticalContentAlignment="Stretch"
+                      ItemsSource="{Binding MiniViewModels}"
                       >
 
                 <ItemsControl.ItemsPanel>
@@ -37,12 +39,13 @@
 
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <reactiveUi:ViewModelViewHost 
-                                                  IsTabStop="False"
-                                                  ViewModel="{Binding}"
-                                                  Margin="15"
-                                                  HorizontalContentAlignment="Stretch"
-                                                  VerticalContentAlignment="Stretch" />
+                    <local:MiniView ViewModel="{Binding}" Margin="15"></local:MiniView>
+<!--                        <reactiveUi:ViewModelViewHost -->
+<!--                                                  IsTabStop="False"-->
+<!--                                                  ViewModel="{Binding}"-->
+<!--                                                  Margin="15"-->
+<!--                                                  HorizontalContentAlignment="Stretch"-->
+<!--                                                  VerticalContentAlignment="Stretch" />-->
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>

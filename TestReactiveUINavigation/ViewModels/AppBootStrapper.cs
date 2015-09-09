@@ -1,4 +1,7 @@
-﻿using ReactiveUI;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using ReactiveUI;
 using Splat;
 using TestReactiveUINavigation.Views;
 
@@ -26,11 +29,39 @@ namespace TestReactiveUINavigation.ViewModels
 
         private void RegisterParts(IMutableDependencyResolver dependencyResolver)
         {
+            dependencyResolver.RegisterConstant(new MyLogManager(), typeof(ILogManager));
             dependencyResolver.RegisterConstant(this, typeof (IScreen));
 
             dependencyResolver.Register(() => new SimpleView(), typeof (IViewFor<SimpleViewModel>));
             dependencyResolver.Register(() => new ComplexView(), typeof (IViewFor<ComplexViewModel>));
             dependencyResolver.Register(() => new MiniView(), typeof (IViewFor<MiniViewModel>));
+        }
+
+        private class MyLogManager : ILogManager
+        {
+            private readonly IDictionary<Type, IFullLogger> _loggers = new Dictionary<Type, IFullLogger>();
+
+            public IFullLogger GetLogger(Type type)
+            {
+                IFullLogger logger;
+                if (!_loggers.TryGetValue(type, out logger))
+                {
+                    logger = new WrappingFullLogger(new MyLogger(), type);
+                    _loggers[type] = logger;
+                }
+                return logger;
+            }
+        }
+
+        // Log to immediate window
+        private class MyLogger : ILogger  
+        {
+            public void Write(string message, LogLevel logLevel)
+            {
+                Debug.WriteLine($"[{logLevel}] {message}");
+            }
+
+            public LogLevel Level { get; set; }
         }
     }
 }

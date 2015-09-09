@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using ReactiveUI;
+using Splat;
 using TestReactiveUINavigation.ViewModels;
 
 namespace TestReactiveUINavigation.Views
@@ -10,7 +11,7 @@ namespace TestReactiveUINavigation.Views
     /// <summary>
     /// Interaction logic for ComplexView.xaml
     /// </summary>
-    public partial class ComplexView : UserControl, IViewFor<ComplexViewModel>
+    public partial class ComplexView : UserControl, IViewFor<ComplexViewModel>, IEnableLogger
     {
         public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(
                                                                                                   "ViewModel",
@@ -26,15 +27,18 @@ namespace TestReactiveUINavigation.Views
 
         private IEnumerable<IDisposable> ApplyBindings()
         {
+            yield return 
+            this.WhenAnyValue(x => x.ViewModel).BindTo(this, x => x.DataContext);
+
             // I know ButtonText is not going to change -- for demo purposes only
             yield return
                 this.OneWayBind(ViewModel, vm => vm.ButtonText, v => v.NavigateBackButton.Content);
 
             yield return
-                this.BindCommand(ViewModel, vm => vm.NavigateBackCommand, v => v.NavigateBackButton);
+                this.BindCommand(ViewModel, vm => vm.HostScreen.Router.NavigateBack, v => v.NavigateBackButton);
 
             yield return
-                this.OneWayBind(ViewModel, vm => vm.MiniViewModels, v => v.ButtonsItemsControl.ItemsSource);
+                this.OneWayBind(ViewModel, vm => vm, v => v.DataContext);
         }
 
         public ComplexViewModel ViewModel
