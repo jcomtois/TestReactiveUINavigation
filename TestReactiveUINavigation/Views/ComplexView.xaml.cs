@@ -36,9 +36,6 @@ namespace TestReactiveUINavigation.Views
 
             yield return
                 this.BindCommand(ViewModel, vm => vm.HostScreen.Router.NavigateBack, v => v.NavigateBackButton);
-
-            yield return
-                this.OneWayBind(ViewModel, vm => vm, v => v.DataContext);
         }
 
         public ComplexViewModel ViewModel
